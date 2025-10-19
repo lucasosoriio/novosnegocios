@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Enviando mensagens...</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 40px; }
+  .wrap { max-width: 700px; margin: auto; }
+  .barra { width: 100%; height: 24px; background: #eee; border-radius: 8px; overflow: hidden; margin: 10px 0; }
+  .prog { height: 100%; width: 0; background: #2c7a7b; transition: width .5s ease; }
+  .row { margin: 6px 0; }
+  button { background:#b91c1c; color:#fff; border:none; padding:10px 16px; border-radius:6px; cursor:pointer; }
+  button:hover{ background:#991b1b; }
+  a { display:inline-block; margin-left:10px; color:#2c7a7b; text-decoration:none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h2>Enviando mensagens...</h2>
+  <div class="row">Status: <span id="msg">iniciando...</span></div>
+  <div class="row">Contato atual: <b id="atual">-</b></div>
+  <div class="barra"><div id="prog" class="prog"></div></div>
+  <div class="row">Enviados: <b id="ok">0</b> | Falhas: <b id="fail">0</b> | Pulados: <b id="skip">0</b> | Total: <b id="total">0</b></div>
+  <div class="row">
+    <button id="cancel">Cancelar envio</button>
+    <a href="/historico" target="_blank">Abrir histórico</a>
+    <a href="/download_log">Baixar log (.csv)</a>
+  </div>
+  <div id="erro" style="color:#b91c1c; margin-top:10px;"></div>
+  <div id="fim" style="margin-top:15px;"></div>
+</div>
+
+<script>
+  const elMsg = document.getElementById('msg');
+  const elAtual = document.getElementById('atual');
+  const elOk = document.getElementById('ok');
+  const elFail = document.getElementById('fail');
+  const elSkip = document.getElementById('skip');
+  const elTotal = document.getElementById('total');
+  const elProg = document.getElementById('prog');
+  const elErro = document.getElementById('erro');
+  const elFim = document.getElementById('fim');
+  const btnCancel = document.getElementById('cancel');
+
+  let timer = null;
+
+  function pct(ok, fail, skip, total) {
+    const done = ok + fail + skip;
+    if (total === 0) return 0;
+    return Math.round((done / total) * 100);
+  }
+
+  function poll() {
+    fetch('/status').then(r => r.json()).then(s => {
+      elMsg.textContent = s.mensagem || '';
+      elAtual.textContent = s.atual || '-';
+      elOk.textContent = s.enviados;
+      elFail.textContent = s.falhas;
+      elSkip.textContent = s.pulados;
+      elTotal.textContent = s.total;
+      elProg.style.width = pct(s.enviados, s.falhas, s.pulados, s.total) + '%';
+
+      if (s.erro) {
+        elErro.textContent = 'Erro: ' + s.erro;
+      }
+
+      if (!s.running) {
+        clearInterval(timer);
+        elFim.textContent = 'Processo finalizado.';
+      }
+    }).catch(() => { /* ignora erros transitórios */ });
+  }
+
+  timer = setInterval(poll, 2000);
+  poll();
+
+  btnCancel.onclick = () => {
+    fetch('/cancelar', {method:'POST'}).then(() => {
+      elMsg.textContent = 'Cancelando...';
+    });
+  };
+</script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Histórico de Envios</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 40px; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { border:1px solid #ddd; padding:8px 10px; font-size:14px; text-align:left; }
+  th { background:#f3f3f3; }
+  .top { margin-bottom: 12px; }
+  a.btn { display:inline-block; background:#2c7a7b; color:#fff; padding:8px 12px; border-radius:6px; text-decoration:none; }
+  a.btn:hover { background:#225e5f; }
+</style>
+</head>
+<body>
+  <div class="top">
+    <a class="btn" href="/download_log">Baixar log (.csv)</a>
+    <a class="btn" style="background:#555" href="/">Voltar</a>
+  </div>
+  <h2>Histórico de Envios</h2>
+  <table>
+    <tr>
+      <th>Data/Hora</th>
+      <th>Arquivo</th>
+      <th>Síndico</th>
+      <th>Condomínio</th>
+      <th>Telefone</th>
+      <th>Status</th>
+      <th>Mensagem</th>
+    </tr>
+    {% for r in registros %}
+    <tr>
+      <td>{{ r.data_hora }}</td>
+      <td>{{ r.arquivo }}</td>
+      <td>{{ r.sindico }}</td>
+      <td>{{ r.condominio }}</td>
+      <td>{{ r.telefone }}</td>
+      <td>{{ r.status }}</td>
+      <td style="white-space: pre-wrap">{{ r.mensagem }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</body>
+</html>

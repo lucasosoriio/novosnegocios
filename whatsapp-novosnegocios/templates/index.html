@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Envio de Mensagens WhatsApp</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      background-color: #f7f7f7;
+    }
+    .container {
+      max-width: 700px;
+      margin: auto;
+      background: #fff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #2c3e50;
+      margin-bottom: 8px;
+    }
+    .metricas {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #f0f9f9;
+      border-left: 4px solid #2c7a7b;
+      padding: 12px 16px;
+      border-radius: 6px;
+      margin-bottom: 25px;
+    }
+    .metricas span {
+      font-weight: bold;
+      color: #2c7a7b;
+      font-size: 15px;
+    }
+    .btn-historico {
+      background-color: #2c7a7b;
+      color: #fff;
+      padding: 8px 16px;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: background 0.3s;
+    }
+    .btn-historico:hover {
+      background-color: #225e5f;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 6px;
+    }
+    input[type="file"],
+    textarea {
+      width: 100%;
+      margin-bottom: 20px;
+      font-size: 15px;
+    }
+    textarea {
+      height: 100px;
+      resize: vertical;
+      padding: 10px;
+    }
+    button {
+      background-color: #2c7a7b;
+      color: #fff;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #225e5f;
+    }
+    .mensagem-box {
+      background-color: #f0f9f9;
+      border-left: 4px solid #2c7a7b;
+      padding: 15px;
+      white-space: pre-wrap;
+      font-size: 15px;
+      margin-bottom: 20px; /* 🔹 aumentei o espaço inferior */
+    }
+    .hint {
+      font-size: 13px;
+      color: #555;
+      margin-top: 10px;   /* 🔹 espaço extra acima */
+      margin-bottom: 15px;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Envio de Mensagens WhatsApp</h2>
+
+    <div class="metricas">
+      <span>Enviados hoje: {{ enviados_hoje }}/50</span>
+      <a href="/historico" class="btn-historico" target="_blank">📜 Histórico</a>
+    </div>
+
+    <form method="POST" action="/preview" enctype="multipart/form-data">
+      <label><b>Mensagem padrão do sistema:</b></label>
+      <div class="mensagem-box">{{ mensagem_padrao }}</div>
+
+      <p class="hint">
+        Se quiser alterar a mensagem, edite o campo abaixo (mantendo as variáveis
+        <b>{NOME DO CLIENTE}</b> e <b>{NOME DO CONDOMÍNIO}</b> onde desejar):
+      </p>
+
+      <textarea name="mensagem" id="mensagem" placeholder="Digite aqui sua nova mensagem (opcional)..."></textarea>
+
+      <label><b>Selecione a planilha (.xlsx ou .csv):</b></label>
+      <input type="file" name="arquivo" required>
+
+      <button type="submit">Pré-visualizar</button>
+    </form>
+  </div>
+</body>
+</html>

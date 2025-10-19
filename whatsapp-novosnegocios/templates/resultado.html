@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Envio Finalizado</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 80px;
+        }
+        .barra {
+            width: 80%;
+            height: 25px;
+            background-color: #eee;
+            margin: 20px auto;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .progresso {
+            height: 100%;
+            width: 0;
+            background-color: #2c7a7b;
+            transition: width 1s ease;
+        }
+    </style>
+</head>
+<body>
+    <h2>Envio concluído ✅</h2>
+    <p><b>{{ enviados }}</b> mensagens enviadas com sucesso<br>
+       <b>{{ falhas }}</b> falharam no envio</p>
+
+    <div class="barra">
+        <div class="progresso" id="progresso"></div>
+    </div>
+
+    <p id="status">Finalizando...</p>
+
+    <script>
+        let progresso = document.getElementById("progresso");
+        let status = document.getElementById("status");
+        let enviados = {{ enviados }};
+        let falhas = {{ falhas }};
+        let total = enviados + falhas;
+        let pct = Math.round((enviados / total) * 100);
+        progresso.style.width = pct + "%";
+        status.textContent = "Sucesso em " + pct + "% dos envios.";
+    </script>
+
+    <a href="/">← Voltar ao início</a>
+</body>
+</html>

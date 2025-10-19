@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Pré-visualização</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f7f7f7;
+        }
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            background: #fff;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            padding: 8px 10px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+            text-align: left;
+        }
+        th {
+            background-color: #2c7a7b;
+            color: white;
+        }
+        .mensagem-preview {
+            background-color: #f0f9f9;
+            border-left: 4px solid #2c7a7b;
+            padding: 15px;
+            white-space: pre-wrap;
+            font-size: 15px;
+        }
+        .contador {
+            margin: 10px 0;
+            font-weight: bold;
+            color: #2c7a7b;
+        }
+        button {
+            background-color: #2c7a7b;
+            color: #fff;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #225e5f;
+        }
+        a {
+            display: inline-block;
+            margin-top: 15px;
+            color: #2c7a7b;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Pré-visualização das Mensagens</h2>
+        <p><b>Mensagem a ser enviada:</b></p>
+        <div class="mensagem-preview">{{ mensagem }}</div>
+
+        <p class="contador">Contatos selecionados: <span id="contador">0</span> de {{ contatos|length }}</p>
+
+        <form method="POST" action="/enviar">
+            <input type="hidden" name="arquivo" value="{{ arquivo }}">
+            <input type="hidden" name="mensagem" value="{{ mensagem }}">
+
+            <table>
+                <tr>
+                    <th><input type="checkbox" id="checkAll"></th>
+                    <th>Síndico</th>
+                    <th>Condomínio</th>
+                    <th>Telefone</th>
+                    <th>Mensagem Final</th>
+                </tr>
+                {% for c in contatos %}
+                <tr>
+                    <td>
+                        <input type="checkbox" name="selecionados" value="{{ c.formatado }}">
+                        <!-- Mapeia o contato (número || síndico || condomínio) -->
+                        <input type="hidden" name="map" value="{{ c.formatado }}||{{ c.sindico }}||{{ c.condominio }}">
+                    </td>
+                    <td>{{ c.sindico }}</td>
+                    <td>{{ c.condominio }}</td>
+                    <td>{{ c.formatado }}</td>
+                    <td style="white-space: pre-wrap;">{{ c.mensagem }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+
+            <button type="submit">Confirmar e Enviar</button>
+        </form>
+
+        <a href="/">← Voltar</a>
+    </div>
+
+    <script>
+        const checkAll = document.getElementById('checkAll');
+        const checkboxes = document.querySelectorAll('input[name="selecionados"]');
+        const contador = document.getElementById('contador');
+
+        function atualizarContador() {
+            const selecionados = document.querySelectorAll('input[name="selecionados"]:checked').length;
+            contador.textContent = selecionados;
+        }
+
+        checkAll.addEventListener('change', () => {
+            checkboxes.forEach(ch => ch.checked = checkAll.checked);
+            atualizarContador();
+        });
+
+        checkboxes.forEach(ch => ch.addEventListener('change', atualizarContador));
+        atualizarContador();
+    </script>
+</body>
+</html>
